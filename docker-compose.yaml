@@ -1,0 +1,69 @@
+version: '3.8'
+
+services:
+    app:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: app
+        restart: unless-stopped
+        working_dir: /var/www/html
+        ports:
+            - '8080:8080'
+        volumes:
+            - ./:/var/www/html
+        networks:
+            - meli-network
+        depends_on:
+            - mysql
+            - redis
+
+    mysql:
+        image: mysql:8.0
+        container_name: mysql
+        restart: unless-stopped
+        ports:
+            - '3306:3306'
+        environment:
+            MYSQL_DATABASE: meli
+            MYSQL_ROOT_PASSWORD: root
+            MYSQL_PASSWORD: root
+            MYSQL_USER: meli
+        volumes:
+            - mysql-data:/var/lib/mysql
+        networks:
+            - meli-network
+
+    redis:
+        image: redis:alpine
+        container_name: redis
+        restart: unless-stopped
+        ports:
+            - '6379:6379'
+        volumes:
+            - redis-data:/data
+        networks:
+            - meli-network
+
+    mockoon:
+        image: mockoon/cli:latest
+        container_name: mockoon
+        restart: unless-stopped
+        ports:
+            - '3001:3001'
+        command: ['-d', 'data', '-p', '3001']
+        volumes:
+            - type: bind
+              source: ./meli-mockoon.json
+              target: /data
+              read_only: true
+        networks:
+            - meli-network
+
+networks:
+    meli-network:
+        driver: bridge
+
+volumes:
+    mysql-data:
+    redis-data:
