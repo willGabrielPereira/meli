@@ -6,7 +6,7 @@ Primeiramente, minha sugestão é separar o consumo das Jobs e o serviço aos us
 Mesmo resolvendo esse problema de infraestrutura, continuaríamos tendo problemas com I/O no Banco de dados, principalmente considerando o script disponível nesse projeto, onde um comando lê um seller, captura o token e envia para uma job que salva apenas 1 registro.
 Nesse caso, eu analisaria a possibilidade de usar operações em batch/bulk, diminuindo a carga do pool de conexões, já que teríamos apenas uma conexão. Ainda, poderíamos evitar a sobrecarga dos usuários, criando BDs réplicas para leitura apenas, assim o serviço aos usuários retornaria dados dessa réplica, enquanto o consumer de Jobs salvaria no original, evitando assim delay ou problemas de LOCK no BD durante requisições de usuários.
 
-Ainda assim, caso não seja usado, seria importante trabalhar com cache e talvez evitando re-salvar produtos que foram atualizados há pouco tempo (isso dependeria da regra de negócio e do tipo de sistema/cliente)
+Ainda assim, caso não seja usado hoje, seria importante trabalhar com cache e talvez evitando re-salvar produtos que foram atualizados há pouco tempo (isso dependeria da regra de negócio e do tipo de sistema/cliente)
 
 
 -- A partir daqui não estou mais respondendo o estudo de caso, apenas mostrando uma de minhas experiências --
