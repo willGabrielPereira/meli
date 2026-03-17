@@ -18,6 +18,13 @@ class Product extends Model
         'last_sync' => 'datetime',
     ];
 
+    protected static function booted()
+    {
+        static::saving(function ($product) {
+            $product->last_sync = now();
+        });
+    }
+
 
     public function scopeSeller($query, int $seller)
     {

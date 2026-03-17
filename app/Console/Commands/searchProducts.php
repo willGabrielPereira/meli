@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Helpers\Meli;
 use App\Helpers\Tray;
+use App\Jobs\ProcessProduct;
 use Illuminate\Console\Command;
 
 class searchProducts extends Command
@@ -31,13 +32,31 @@ class searchProducts extends Command
                 }
 
                 $this->error('Erro ao buscar token do seller: ' . $e->getMessage());
-                continue;
+                die();
             }
         }
 
         $meli = new Meli($token);
-        $products = $meli->searchProducts($seller);
+        $paging = (object) ['total' => 0, 'limit' => 50, 'offset' => 0];
 
-        dd($products);
+        do {
+            $productsResponse = $meli->searchProducts($seller, $paging->offset);
+
+            if (!isset($productsResponse->results) || empty($productsResponse->results)) {
+                break; // Sem mais resultados ou falha
+            }
+
+            $products = $productsResponse->results;
+
+            foreach ($products as $product) {
+                ProcessProduct::dispatch($product, $seller, $token);
+            }
+
+            $paging = $productsResponse->paging;
+
+            $this->info("Foram enviados " . count($products) . " produtos para a fila (Offset atual: {$paging->offset}).");
+
+            $paging->offset += $paging->limit;
+        } while ($paging->offset < $paging->total);
     }
 }

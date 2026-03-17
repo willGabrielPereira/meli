@@ -45,11 +45,16 @@ class Meli
             throw new \Exception("Erro ao buscar dados do servidor", 1);
         }
 
-        return $response->json();
+        return $response->object();
     }
 
-    public function searchProducts(int $seller)
+    public function searchProducts(int $seller, int $offset = 0)
     {
-        return $this->api('/sites/MLB/search', 'GET', ['seller_id' => $seller]);
+        return $this->api('/sites/MLB/search', 'GET', ['seller_id' => $seller, 'offset' => $offset]);
+    }
+
+    public function getProduct(string $productId)
+    {
+        return $this->api('/items/' . $productId);
     }
 }

@@ -38,7 +38,7 @@ class Tray
             throw new \Exception("Erro ao buscar dados do servidor", $response->status());
         }
 
-        return (object) $response->json();
+        return $response->object();
     }
 
     public function getSellerData(?int $seller)
