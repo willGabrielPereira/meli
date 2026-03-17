@@ -1,6 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\TestController;
+use App\Http\Controllers\ProductController;
 
-Route::get('/', [TestController::class, 'index']);
+Route::get('/', [ProductController::class, 'index']);

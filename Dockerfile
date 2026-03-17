@@ -31,6 +31,7 @@ COPY . .
 
 RUN composer install
 RUN php artisan key:generate
+RUN php artisan migrate
 
 # Run the Laravel development server
 EXPOSE 8080
