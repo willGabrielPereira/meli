@@ -32,7 +32,7 @@ class searchProducts extends Command
                 }
 
                 $this->error('Erro ao buscar token do seller: ' . $e->getMessage());
-                die();
+                return Command::FAILURE;
             }
         }
 
@@ -48,8 +48,8 @@ class searchProducts extends Command
 
             $products = $productsResponse->results;
 
-            foreach ($products as $product) {
-                ProcessProduct::dispatch($product, $seller, $token);
+            foreach ($products as $productId) {
+                ProcessProduct::dispatch($productId, $seller, $token);
             }
 
             $paging = $productsResponse->paging;

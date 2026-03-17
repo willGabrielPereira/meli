@@ -19,6 +19,12 @@ return new class extends Migration
             $table->string('status');
             $table->dateTime('last_sync');
             $table->timestamps();
+
+            // Índice composto único: garante que não existam duplicatas por seller+anúncio
+            $table->unique(['seller', 'meli_id']);
+
+            // Índice em status para facilitar filtros futuros (ex: WHERE status = 'active')
+            $table->index('status');
         });
     }
 

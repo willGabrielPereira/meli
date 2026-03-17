@@ -48,10 +48,10 @@ Retorna a listagem dos produtos sincronizados, utilizando os padrões de pagina�
 
 **Exemplos de uso:**
 - Listar produtos (configuração normal):
-  `http://localhost:8080/`
+  `http://localhost:8080/api/items/`
 
 - Listar a página 3 contendo apenas 5 produtos cada:
-  `http://localhost:8080/?page=3&limit=5`
+  `http://localhost:8080/api/items/?page=3&limit=5`
 
 **Resposta de Sucesso (200 OK - Paginador Completo)**
 ```json
