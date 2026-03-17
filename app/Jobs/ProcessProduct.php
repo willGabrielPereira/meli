@@ -19,7 +19,7 @@ class ProcessProduct implements ShouldQueue
     public $seller;
     public $token;
 
-    public function __construct($productId, $seller, $token)
+    public function __construct(string $productId, int $seller, string $token)
     {
         $this->productId = $productId;
         $this->seller = $seller;
@@ -28,26 +28,24 @@ class ProcessProduct implements ShouldQueue
 
     public function handle(): void
     {
-        Log::info('Processando produto do MELI', ['product_id' => $this->productId]);
+        Log::info('Processando produto do MELI', ['product_id' => $this->productId, 'seller' => $this->seller, 'token' => $this->token]);
 
         $meli = new Meli($this->token);
         $product = $meli->getProduct($this->productId);
 
-        $product = Product::seller($this->seller)->meliId($this->productId)->first();
+        $savedProduct = Product::seller($this->seller)->meliId($this->productId)->first();
 
-        if ($product) {
-            $product->update([
-                'name' => $product->title,
-                'price' => $product->price,
-                'stock' => $product->stock,
+        if ($savedProduct) {
+            $savedProduct->update([
+                'title' => $product->title,
+                'status' => $product->status,
             ]);
         } else {
             Product::create([
-                'seller_id' => $this->seller,
+                'seller' => $this->seller,
                 'meli_id' => $this->productId,
-                'name' => $product->title,
-                'price' => $product->price,
-                'stock' => $product->stock,
+                'title' => $product->title,
+                'status' => $product->status,
             ]);
         }
     }
